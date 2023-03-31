@@ -1,0 +1,28 @@
+FROM golang:alpine AS builder
+
+WORKDIR /usr/src/app
+
+COPY *.go ./
+
+#RUN go mod init desafio01go/m/v2
+
+#RUN go mod download
+
+#RUN go build -o /desafio_01_go
+
+#RUN go build -ldflags "-w -s" main.go
+
+RUN CGO_ENABLED=0 GOOS=linux \
+    go build \
+    -ldflags '-s -w' \
+    main.go
+
+#RUN ls
+
+FROM scratch
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/main .
+
+ENTRYPOINT ["./main"]
